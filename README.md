@@ -34,8 +34,8 @@ residential_streets = concat([canarias[(canarias.code >= 5121) & (canarias.code 
 residential_streets = residential_streets[residential_streets.name.notnull()]
 residential_streets["x"] = list(map(lambda x: x.centroid.x, residential_streets["geometry"]))
 residential_streets["y"] = list(map(lambda x: x.centroid.y, residential_streets["geometry"]))
-residential_streets["osm_id_api"] = list(map(lambda x: "W"+str(x), residential_streets["osm_id"]))
-residential_streets = residential_streets[["osm_id", "osm_id_api","name", "x", "y"]]
+residential_streets["way_id"] = list(map(lambda x: "W"+str(x), residential_streets["osm_id"]))
+residential_streets = residential_streets[["osm_id", "way_id","name", "x", "y"]]
 
 residential_streets.to_csv("streets.csv", index=False, sep=";")
 ```
@@ -45,6 +45,32 @@ residential_streets.to_csv("streets.csv", index=False, sep=";")
 Now we need to get some extra data from the osm_id with reverse geocoding. To do this, we can use:
 
 - **Oficial openstreetmaps Nominatim request API**: https://nominatim.org/release-docs/develop/api/Lookup/
+
+```python
+from numpy import arange
+from requests import get
+from pandas import read_csv, concat, DataFrame
+from tqdm import tqdm
+
+datos = read_csv("streets.csv", sep=";")
+url = "https://nominatim.openstreetmap.org/lookup?osm_ids=#&format=json"
+
+valor_inicio = arange(0,datos.shape[0],50)
+valor_final = arange(50,datos.shape[0],50)
+iterar = list(zip(valor_inicio, valor_final))
+iterar.append((valor_final[-1], valor_final[-1] + datos.shape[0]%50))
+final_data = DataFrame()
+
+for i in tqdm(iterar):
+    response = get(url.replace("#", ",".join(datos.way_id[i[0]:i[1]]))).json()
+    get_values = lambda x: x["address"]
+    values = DataFrame.from_dict(list(map(get_values, response)))
+    final_data = concat([final_data, values]).reset_index(drop=True)
+
+```
+
+Then you just need to merge both DataFrames (datos and final_data) by the way_id (way_id = "W" + osm_id)
+
 - **Self-host the Nominatim request API**: https://github.com/mediagis/nominatim-docker/tree/master/3.7
 
 In case you are using the **Self-hosted** option, you need to [install docker](https://docs.docker.com/engine/install/) 
@@ -75,7 +101,7 @@ sudo docker run -it --rm \
   mediagis/nominatim:3.7
 ```
 
-Then use the next code (WORK IN PROGRESS):
+Then use the next code:
 
 ```python
 from numpy import arange
@@ -98,3 +124,4 @@ for i in tqdm(iterar):
     values = DataFrame.from_dict(list(map(get_values, response)))
     final_data = concat([final_data, values]).reset_index(drop=True)
 ```
+Then you just need to merge both DataFrames (datos and final_data) by the way_id (way_id = "W" + osm_id)
