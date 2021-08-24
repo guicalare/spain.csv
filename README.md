@@ -1,6 +1,6 @@
 # spain.csv
 
-Spain.csv is a repository of all usefull data that I can gather and save it in a friendly csv format.
+Spain.csv is a repository of all usefull data that I have been able to gather and save it in a friendly csv format.
 
 ## Residential streets
 
@@ -89,7 +89,7 @@ wget https://download.geofabrik.de/europe/spain-latest.osm.pbf & wget https://do
 osmium merge spain-latest.osm.pbf canary-islands-latest.osm.pbf -o spain.osm.pbf
 ```
 
-Then open a new terminal, copy the directory path where the spain.osm.pbf was created and pasted into <YOUR_DIRECTORY> from the next command. Then run it and wait until the docker istance is done (take a cup of coffee, because this istance build can take while, 30 mins to 1 h depending of your computer):
+Then open a new terminal, copy the directory path where the spain.osm.pbf was created and pasted into <YOUR_DIRECTORY> from the next command. Then run it and wait until the docker istance is done (take a cup of coffee, because this instance build can take while, 30 mins to 1 h depending of your computer):
 
 ```
 sudo docker run -it --rm \
