@@ -94,7 +94,7 @@ Then open a new terminal, copy the directory path where the spain.osm.pbf was cr
 ```
 sudo docker run -it --rm \
   -e PBF_PATH=/nominatim/data/spain.osm.pbf \
-  -e REPLICATION_URL=https://download.geofabrik.de/europe/monaco-updates/ \
+  -e REPLICATION_URL=https://download.geofabrik.de/ \
   -p 8080:8080 \
   -v <YOUR_DIRECTORY>:/nominatim/data \
   --name nominatim \
