@@ -51,6 +51,7 @@ from numpy import arange
 from requests import get
 from pandas import read_csv, concat, DataFrame
 from tqdm import tqdm
+from time import sleep
 
 datos = read_csv("streets.csv", sep=";")
 url = "https://nominatim.openstreetmap.org/lookup?osm_ids=#&format=json"
@@ -66,6 +67,7 @@ for i in tqdm(iterar):
     get_values = lambda x: x["address"]
     values = DataFrame.from_dict(list(map(get_values, response)))
     final_data = concat([final_data, values]).reset_index(drop=True)
+    sleep(1)
 
 ```
 
@@ -73,30 +75,28 @@ Then you just need to merge both DataFrames (datos and final_data) by the way_id
 
 - **Self-host the Nominatim request API**: https://github.com/mediagis/nominatim-docker/tree/master/3.7
 
-In case you are using the **Self-hosted** option, you need to [install docker](https://docs.docker.com/engine/install/) 
+In case you are using the **Self-hosted** option, you need to [install docker](https://docs.docker.com/engine/install/) and [osmium](https://osmcode.org/osmium-tool/manual.html)
 
-![](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fdeveloper.ibm.com%2Fbluemix%2Fwp-content%2Fuploads%2Fsites%2F20%2F2015%2F06%2Fdocker-logo-300.png&f=1&nofb=1)
+- Osmium command line install (Ubuntu/Debian)
 
-Then open a new termiinal and create a docker instance (you must repeat this 2 times):
+```
+sudo apt install osmium-tool
+```
+Next, we need to build the Nominatim database:
 
-Docker instance for the Iberian Peninsula
+```
+wget https://download.geofabrik.de/europe/spain-latest.osm.pbf & wget https://download.geofabrik.de/africa/canary-islands-latest.osm.pbf
+osmium merge spain-latest.osm.pbf canary-islands-latest.osm.pbf -o spain.osm.pbf
+```
+
+Then open a new terminal, copy the directory path where the spain.osm.pbf was created and pasted into <YOUR_DIRECTORY> from the next command. Then run it and wait until the docker istance is done (take a cup of coffee, because this istance build can take while, 30 mins to 1 h depending of your computer):
 
 ```
 sudo docker run -it --rm \
-  -e PBF_URL=https://download.geofabrik.de/europe/spain-latest.osm.pbf \
-  -e REPLICATION_URL=https://download.geofabrik.de/europe/spain-updates/ \
+  -e PBF_PATH=/nominatim/data/spain.osm.pbf \
+  -e REPLICATION_URL=https://download.geofabrik.de/europe/monaco-updates/ \
   -p 8080:8080 \
-  --name nominatim \
-  mediagis/nominatim:3.7
-```
-
-Docker instance for the Canary Island
-
-```
-sudo docker run -it --rm \
-  -e PBF_URL=https://download.geofabrik.de/africa/canary-islands-latest.osm.pbf \
-  -e REPLICATION_URL=https://download.geofabrik.de/africa/canary-islands-updates/ \
-  -p 8080:8080 \
+  -v <YOUR_DIRECTORY>:/nominatim/data \
   --name nominatim \
   mediagis/nominatim:3.7
 ```
