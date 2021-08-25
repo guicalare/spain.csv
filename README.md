@@ -124,4 +124,44 @@ for i in tqdm(iterar):
     values = DataFrame.from_dict(list(map(get_values, response)))
     final_data = concat([final_data, values]).reset_index(drop=True)
 ```
+
 Then you just need to merge both DataFrames (datos and final_data) by the way_id (way_id = "W" + osm_id)
+
+4. Add elevation to the streets
+
+<img src="https://www.open-elevation.com/images/logo.svg" alt="drawing" width="80"/>
+
+To add the elevation to each street you will need to use [open elevation](https://www.open-elevation.com/) using the public API or the self-hosted option. I recomend using the self-host option becausa as the [author said](https://stackoverflow.com/a/68697220) the server is not as powerfull as other services (by the way, you can support the author with [donations](https://www.open-elevation.com/#donate))
+
+Follow the [instructions](https://github.com/Jorl17/open-elevation/blob/master/docs/host-your-own.md) for deploying the self-host solution and then use the following code:
+
+```python
+from pandas import read_csv, DataFrame, concat
+from requests import get
+from numpy import arange
+from tqdm import tqdm
+
+data = read_csv("streets.csv", sep=";")
+
+s = lambda x, y: str(x) + "," + str(y)
+
+data["f"] = list(map(s, data["y"], data["x"]))
+
+valor_inicio = arange(0,data.shape[0],100)
+valor_final = arange(100,data.shape[0],100)
+iterar = list(zip(valor_inicio, valor_final))
+iterar.append((valor_final[-1], valor_final[-1] + data.shape[0]%100))
+
+url = "http://localhost/api/v1/lookup?locations=#"
+
+final_data = DataFrame()
+
+for i in tqdm(iterar):
+
+    response = get(url.replace("#","|".join(data.f[i[0]:i[1]]))).json()
+    values = DataFrame.from_dict(response["results"])
+    final_data = concat([final_data, values]).reset_index(drop=True)
+    
+df = concat([data, final_data[["elevation"]]], axis=1)
+df.to_csv("elevation_streets.csv", index=False, sep=";")
+```
