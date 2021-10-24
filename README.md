@@ -165,3 +165,122 @@ for i in tqdm(iterar):
 df = concat([data, final_data[["elevation"]]], axis=1)
 df.to_csv("elevation_streets.csv", index=False, sep=";")
 ```
+# Municipalities data
+
+You can download some municipalities data from [INE](ine.es) by running the next code:
+
+## Postal codes
+
+```python
+from pandas import read_table
+
+cod_municipios = read_table("https://raw.githubusercontent.com/inigoflores/ds-codigos-postales-ine-es/master/data/codigos_postales_municipios.csv", sep=",", dtype=str)
+cod_municipios.to_csv("codigos_municipios.csv", sep=";", index=False)
+```
+
+## Population of municipalities [DATA](https://www.ine.es/jaxiT3/Tabla.htm?t=33571)
+
+```python
+from pandas import read_table
+
+def ine_num_str2int(valor):
+    try:
+        if valor[-2:] == ".0":
+            return int(valor[:-2].replace(".",""))
+        else:
+            return int(valor.replace(".",""))
+    except Exception as e:
+        return 0
+
+
+padron = read_table("https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/33571.csv?nocab=1", sep=";", dtype=str)
+last_year = padron.loc[0]["Periodo"].split(" ")[-1]
+padron = padron[padron["Periodo"] == padron.loc[0]["Periodo"]]
+padron = padron[padron["Municipios"] != "Total Nacional"]
+padron = padron.sort_values(by=['Municipios'])
+padron["Municipios"] = list(map(lambda x: x.split(" ")[0], padron["Municipios"]))
+_01001 = padron[padron["Municipios"] == "01001"]
+padron["Total_2"] = list(map(ine_num_str2int, padron["Total"]))
+padron = padron.pivot_table(index="Municipios", columns=["Sexo", "Nacionalidad", "Edad (grandes grupos)"], values="Total_2")
+padron.columns = list(map(lambda x: x[0].replace(" ","_") + "_" + x[1].replace(" ","_") + "_" + x[2].replace(" ","_"), padron.columns))
+padron.reset_index(inplace=True)
+padron["Ultimo_periodo"] = last_year
+padron.to_csv("padron.csv", sep=";", index=False)
+```
+
+## Businesses by municipalities [DATA](https://www.ine.es/jaxiT3/Tabla.htm?t=4721)
+
+```python
+from pandas import read_table
+
+def ine_num_str2int(valor):
+    try:
+        if valor[-2:] == ".0":
+            return int(valor[:-2].replace(".",""))
+        else:
+            return int(valor.replace(".",""))
+    except Exception as e:
+        return 0
+
+empresas_cnae = read_table("https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/4721.csv?nocab=1", sep=";", dtype=str)
+last_year = empresas_cnae.loc[0]["Periodo"].split(" ")[-1]
+empresas_cnae = empresas_cnae[empresas_cnae["Periodo"] == empresas_cnae.loc[0]["Periodo"]]
+empresas_cnae = empresas_cnae[empresas_cnae["Municipios"] != "Total Nacional"]
+empresas_cnae = empresas_cnae.sort_values(by=['Municipios'])
+empresas_cnae["Municipios"] = list(map(lambda x: x.split(" ")[0], empresas_cnae["Municipios"]))
+_01001 = empresas_cnae[empresas_cnae["Municipios"] == "01001"]
+empresas_cnae["Total_2"] = list(map(ine_num_str2int, empresas_cnae["Total"]))
+empresas_cnae = empresas_cnae.pivot_table(index="Municipios", columns=["Grupos CNAE"], values="Total_2")
+empresas_cnae.columns = list(map(lambda x: x.replace(" ","_"), empresas_cnae.columns))
+empresas_cnae.reset_index(inplace=True)
+empresas_cnae["Ultimo_periodo"] = last_year
+empresas_cnae.to_csv("empresas_cnae.csv", sep=";", index=False)
+```
+
+## % Tourist housing [DATA](https://www.ine.es/jaxiT3/Tabla.htm?t=39366)
+
+```python
+from pandas import read_table
+
+def ine_num_str2float(valor):
+    try:
+        return float(valor.replace(".","").replace(",","."))
+    except Exception as e:
+        return 0
+
+pct_viviendas = read_table("https://www.ine.es/jaxiT3/files/t/en/csv_bdsc/39366.csv?nocab=1", sep=";", dtype=str)
+pct_viviendas = pct_viviendas[pct_viviendas["Periodo"] == pct_viviendas.loc[0]["Periodo"]]
+pct_viviendas = pct_viviendas[pct_viviendas["Municipalities"] != "National Total"]
+pct_viviendas = pct_viviendas.sort_values(by=['Municipalities'])
+pct_viviendas["Municipalities"] = list(map(lambda x: x.split(" ")[0], pct_viviendas["Municipalities"]))
+_01001 = pct_viviendas[pct_viviendas["Municipalities"] == "01001"]
+pct_viviendas["Total"] = list(map(ine_num_str2float, pct_viviendas["Total"]))
+pct_viviendas.columns = ["Municipios", "Periodo", "Total"]
+pct_viviendas.to_csv("pct_viviendas.csv", sep=";", index=False)
+```
+
+## Tourist housing [DATA](https://www.ine.es/jaxiT3/Tabla.htm?t=39363)
+
+```python
+from pandas import read_table
+
+def ine_num_str2float(valor):
+    try:
+        return float(valor.replace(".","").replace(",","."))
+    except Exception as e:
+        return 0
+        
+viviendas_turisticas = read_table("https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/39363.csv?nocab=1", sep=";", dtype=str)
+last_year = viviendas_turisticas.loc[0]["Periodo"].split(" ")[-1]
+viviendas_turisticas = viviendas_turisticas[viviendas_turisticas["Periodo"] == viviendas_turisticas.loc[0]["Periodo"]]
+viviendas_turisticas = viviendas_turisticas[viviendas_turisticas["Municipios"] != "Total Nacional"]
+viviendas_turisticas = viviendas_turisticas.sort_values(by=['Municipios'])
+viviendas_turisticas["Municipios"] = list(map(lambda x: x.split(" ")[0], viviendas_turisticas["Municipios"]))
+_01001 = viviendas_turisticas[viviendas_turisticas["Municipios"] == "01001"]
+viviendas_turisticas["Total_2"] = list(map(ine_num_str2float, viviendas_turisticas["Total"]))
+viviendas_turisticas = viviendas_turisticas.pivot_table(index="Municipios", columns=["Viviendas y plazas"], values="Total_2")
+viviendas_turisticas.columns = list(map(lambda x: x.replace(" ","_"), viviendas_turisticas.columns))
+viviendas_turisticas.reset_index(inplace=True)
+viviendas_turisticas["Ultimo_periodo"] = last_year
+viviendas_turisticas.to_csv("viviendas_turisticas.csv", sep=";", index=False)
+```
