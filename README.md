@@ -167,7 +167,7 @@ df.to_csv("elevation_streets.csv", index=False, sep=";")
 ```
 # Municipalities data
 
-You can download some municipalities data from [INE](ine.es) by running the next code:
+You can download some municipalities data from [INE](https://www.ine.es) by running the next code. By deafault, it will get the last record:
 
 ## Postal codes
 
