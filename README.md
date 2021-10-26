@@ -284,3 +284,30 @@ viviendas_turisticas.reset_index(inplace=True)
 viviendas_turisticas["Ultimo_periodo"] = last_year
 viviendas_turisticas.to_csv("viviendas_turisticas.csv", sep=";", index=False)
 ```
+
+# Territorial divisions of municipalities
+
+To get all municipalities of Spain, go to this [URL](https://centrodedescargas.cnig.es/CentroDescargas/buscador.do) and select "divisiones administrativas" >> "Toda España" >> "Limites municipales, provinciales y autonómicos", then press the download buttom and unzip the file.
+
+In Linux:
+```
+unzip lineas_limite.zip
+```
+
+Install python 
+```
+pip3 install fuzzymatcher
+```
+
+Finally, run the next code in the same 
+
+```python
+from geopandas import read_file
+from fuzzymatcher import fuzzy_left_join
+from pandas import read_csv
+
+shp = read_file("recintos_municipales_inspire_peninbal_etrs89.shp")
+datos = read_csv("https://raw.githubusercontent.com/inigoflores/ds-codigos-postales-ine-es/master/data/codigos_postales_municipios.csv", sep=",")
+
+municipios_fuzzy = fuzzy_left_join(shp,datos,left_on='NAMEUNIT',right_on='municipio_nombre')
+```
