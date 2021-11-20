@@ -126,7 +126,7 @@ plt.savefig("img/limites.png")
 
 ```
 
-![]()
+![limites](https://raw.githubusercontent.com/guicalare/spain.csv/main/Comarcas/img/limites.png)
 
 Dicha relacion se consigue ejecutando el siguiente codigo:
 
@@ -177,7 +177,7 @@ comarcas.geometry.boundary.plot(color="red",edgecolor='k',linewidth = 2,ax=ax)
 plt.savefig("img/areas.png")
 ```
 
-![]()
+![areas](https://raw.githubusercontent.com/guicalare/spain.csv/main/Comarcas/img/areas.png)
 
 Exportar los shape files de los municipios con sus correspondientes comarcas:
 
@@ -187,4 +187,4 @@ municipios[["cod_ine", 'CO_COMARCA', 'DS_COMARCA']].to_csv("/home/guillermo/Coma
 
 ```
 
-Puedes encontrar el codigo completo en el archivo **[comarcas.py]()**
+Puedes encontrar el codigo completo en el archivo **[comarcas.py](https://github.com/guicalare/spain.csv/blob/main/Comarcas/comarcas.py)**
