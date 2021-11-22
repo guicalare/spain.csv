@@ -48,7 +48,7 @@ El proceso es muy sencillo. El INE presenta casi cada año un [callejero censal]
 
 Bueno, vamos a ir al lio. Lo primero es descargarse el zip del callejero de la [web](https://www.ine.es/ss/Satellite?c=Page&cid=1259952026632&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout)
 
-![limites](https://media.githubusercontent.com/media/guicalare/spain.csv/main/Codigos%20postales%20WORK%20IN%20PROGRESS/img/callejero.png)
+![limites](https://media.githubusercontent.com/media/guicalare/spain.csv/main/codigos%20postales/img/callejero.png)
 
 Tras esto, descomprimimos el archivo, y ejecutamos el siguiente codigo:
 
@@ -105,7 +105,7 @@ Con esto generaremos un dataframe con la siguiente informacion:
 
 Ya tenemos la tabla realcional que podremos usar ahora con el el mapa vectorial de las secciones censales. Para obtener dicho ficehro, volveremos a la [web](https://www.ine.es/ss/Satellite?c=Page&cid=1259952026632&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout) y descargaremos el fichero correspondiente:
 
-![limites](https://media.githubusercontent.com/media/guicalare/spain.csv/main/Codigos%20postales%20WORK%20IN%20PROGRESS/img/mapa_vectorial.png)
+![limites](https://media.githubusercontent.com/media/guicalare/spain.csv/main/codigos%20postales/img/mapa_vectorial.png)
 
 Una vez descargado, ejecutaremos el siguiente codigo:
 
@@ -148,9 +148,9 @@ codigos_postales.to_file("shp/codigos postales/codigos_postales.shp")
 [46318 rows x 21 columns]
 ```
 
-![limites](https://media.githubusercontent.com/media/guicalare/spain.csv/main/Codigos%20postales%20WORK%20IN%20PROGRESS/img/limites.png)
+![limites](https://raw.githubusercontent.com/guicalare/spain.csv/main/codigos%20postales/img/limites.png)
 
-Puedes encontrar el codigo completo en el archivo **[codigos_postales.py]()**
+Puedes encontrar el codigo completo en el archivo **[codigos_postales.py](https://github.com/guicalare/spain.csv/blob/main/codigos%20postales/codigos_postales.py)**
 
 ## **IMPORTANTE**
 
