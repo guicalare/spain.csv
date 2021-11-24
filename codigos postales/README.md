@@ -40,13 +40,13 @@ Que yo sepa, el INE no impone algun tipo de licencia de uso para las bases de da
 
 ## **Instrucciones**
 
-Los codigos postales españoles pese a ser de uso publico, estan por asi decirlo explotados economicamente por [correos](https://www.correos.es), por lo que toca [pasar por caja]() para obtener dichas bases de datos (realciones [codigo postal - codigo ine](https://tienda.correos.es/product/base-de-datos-codigos-postales-plus) como sus correspondientes [mapas vectoriales](https://tienda.correos.es/product/capa-cartografica-codigos-postales)). Dicha decision parece inmoral y es algo que no se puede tolerar, ya que dichos codigos postales los usamos en nuestro dia a dia, siendo por asi decirlo un bien de interes publico que no deberia ser monetizado. Es por ello, que he decidido hacer ingenieria inversa para obtener dichos datos y sin licencia alguna.
+Los codigos postales españoles(tablas relacionales de los [codigo postal - codigo ine](https://tienda.correos.es/product/base-de-datos-codigos-postales-plus) y sus correspondientes [mapas vectoriales](https://tienda.correos.es/product/capa-cartografica-codigos-postales)) pese a ser de uso publico, estan, por asi decirlo, monetizados por [correos](https://www.correos.es). Es por ello, que he decidido hacer ingenieria inversa para obtener dichas bases de datos sin licencia alguna.
 
-A priori, puede parecer que esto parece un repositorio hacker y que es algo ilegal, pero me he percatado que toda esta infromacion esta publicada por el INE y solo hace falta hacer un poco de (ya lo habras adivinado...) ¡INGENIERIA INVERSA!.
+A priori, puede parecer que esto es un repositorio hacker y algo ilegal, pero me he percatado que toda esta infromacion esta publicada por el INE y solo hace falta hacer un poco de (ya lo habras adivinado...) ¡INGENIERIA INVERSA!.
 
 El proceso es muy sencillo. El INE presenta casi cada año un [callejero censal](https://www.ine.es/ss/Satellite?c=Page&cid=1259952026632&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout) donde presenta la realcion de calles con sus correspondientes codigos ine y codigos postales. Pero aun hay mas... Tambien ponen a disposicion los ficheros de mapas vectoriales de las areas censales, por lo que se podra obtener una reconstruccion de los shape files haciendo uso del callejero.
 
-Bueno, vamos a ir al lio. Lo primero es descargarse el zip del callejero de la [web](https://www.ine.es/ss/Satellite?c=Page&cid=1259952026632&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout)
+Bueno, vamos al lio. Lo primero es descargarse el zip del callejero de la [web](https://www.ine.es/ss/Satellite?c=Page&cid=1259952026632&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout)
 
 ![limites](https://media.githubusercontent.com/media/guicalare/spain.csv/main/codigos%20postales/img/callejero.png)
 
