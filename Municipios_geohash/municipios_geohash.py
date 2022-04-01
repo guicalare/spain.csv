@@ -36,6 +36,5 @@ for i in range(8131, -1, -1):
     except Exception as e:
         print(e)
 
-
-
-f = pd.concat(map(pd.read_csv, glob.glob(os.path.join('/home/guillermo/Descargas/shp/geohash_shp', "*.csv"))))
+datos = pd.concat(map(read_csv, glob.glob(path.join('/home/guillermo/Descargas/shp/geohash_shp', "*.csv"))))
+datos.to_csv("/home/guillermo/Descargas/shp/bb_geohash.csv", sep="#", index=False)
