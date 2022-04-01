@@ -162,7 +162,7 @@ del(municipios["index"])
 
 Una vez tenemos creada la base de datos, procederemos a usar la libreria [polygeohasher](https://github.com/rohitsinghsalyan/polygeohasher), la cual nos ayudara a transformar un poligono (en este caso los municipios) en geohashes con el fin de obtener una relacion entre un geohash y un municipio. Esto puede sonar un poco confuso, asi que como se suele decir: "una imagen vale mas que mil palabras". Veamos el ejemplo que se plantea en el github de [polygeohasher](https://github.com/rohitsinghsalyan/polygeohasher):
 
-Partimos un municipio (en este ejemplo se seguira el que aparece en polygeohasher):
+Partimos de un municipio (en este ejemplo se seguira el que aparece en polygeohasher):
 
 ![a](https://raw.githubusercontent.com/rohitsinghsalyan/polygeohasher/master/example/study_area.png)
 
@@ -238,7 +238,7 @@ for i in range(4000, -1, -1):
 
 Esto mismo se podria programar orientado a [hilos](https://realpython.com/intro-to-python-threading/) (yo he optado por esta opcion, pese a ser algo primitiva). 
 
-**Ejemplo de salida de municipio a geohash**
+**Ejemplo de salida de un municipio a geohash**
 
 ```python
 >>> data
