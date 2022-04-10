@@ -65,6 +65,11 @@ Una vez tenemos los correspondientes ficheros shp, procederemos a cargar la infr
 
 from geopandas import read_file
 from pandas import merge, read_csv, concat
+from numpy import array_split
+import multiprocessing
+from datetime import datetime
+from os import listdir
+from polygeohasher import polygeohasher
 
 municipios1 = read_file("shp/recintos_municipales_inspire_peninbal_etrs89/recintos_municipales_inspire_peninbal_etrs89.shp")
 municipios2 = read_file("shp/recintos_municipales_inspire_canarias_wgs84/recintos_municipales_inspire_canarias_wgs84.shp")
@@ -176,68 +181,48 @@ Bueno, al lio. Para obtener todo esto se tendra que aplicar el siguiente codigo:
 
 
 ```python
-for i in range(8131, -1, -1):
-    archivos = listdir("/home/guillermo/Descargas/shp/geohash_shp")
-    data_slice = municipios[i-1:i]
-    try:
-        if data_slice.shape[0] >= 1:
-            id = data_slice["cod_ine"][i-1]
-            if f"{id}.csv" not in archivos:
-                print(f"{i} {id}")
-                primary_df = polygeohasher.create_geohash_list(data_slice, 8, inner=False)
-                secondary_df = polygeohasher.geohash_optimizer(primary_df, 3, 8, 8)
-                secondary_df.to_csv(f"/home/guillermo/Descargas/shp/geohash_shp/{id}.csv", sep="#")
-            else:
-                print(f"EXISTE {i} -- {id}.csv")
-    except Exception as e:
-        print(e)
+def shp2geohash(data, mingeohash, maxgeohash, output_dir, id_process):
+    data.reset_index(inplace=True)
+    del(data["index"])
+    for i in range(data.shape[0]):
+        archivos = listdir(output_dir)
+        data_slice = data[i:i+1]
+        try:
+            if data_slice.shape[0] >= 1:
+                id = data_slice["cod_ine"][i]
+                if f"{id}.csv" not in archivos:
+                    print(f"{id_process} {i} {id}")
+                    primary_df = polygeohasher.create_geohash_list(data_slice, maxgeohash, inner=False)
+                    secondary_df = polygeohasher.geohash_optimizer(primary_df, mingeohash, maxgeohash, maxgeohash)
+                    secondary_df.to_csv(f"{output_dir}{id}.csv", sep="#")
+                else:
+                    print(f"EXISTE {i} -- {id}.csv")
+        except Exception as e:
+            print(e)
+
+def shp2geohash_multiprocessing(num_process, data, mingeohash, maxgeohash, output_dir):
+    splits = array_split(data, num_process)
+    threads = []
+    for index in range(num_process):
+        x = multiprocessing.Process(target=shp2geohash, args=(splits[index], mingeohash, maxgeohash, output_dir, index, ))
+        threads.append(x)
+        x.start()
+    start = datetime.now()
+    for index, thread in enumerate(threads):
+        thread.join()
+    end = datetime.now()
+    print("Tiempo de ejecucion: ", end-start)
+
+shp2geohash_multiprocessing(10, municipios, 3, 8, "/home/guillermo/Descargas/shp/prueba/")
 ```
 
-**Importante**: este proceso puede durar horas o dias, por lo que recomiendo ejecutar varias instancias del codigo de arriba apuntando a diferentes partes de la base de datos de los municipios con el fin de calcular varios municipios a la vez. Esto es:
-
+**Importante**: este proceso puede durar horas o dias (dependiendo del ordenador), por lo que recomiendo ejecutar tantas instancias como se puedan con el fin de agilizar todo el proceso. 
+ 
 ```python
-
-# En una terminal ejecutar esto [ira del municipio 8131 hasta el municipio 0]
-
-for i in range(8131, -1, -1):
-    archivos = listdir("/home/guillermo/Descargas/shp/geohash_shp")
-    data_slice = municipios[i-1:i]
-    try:
-        if data_slice.shape[0] >= 1:
-            id = data_slice["cod_ine"][i-1]
-            if f"{id}.csv" not in archivos:
-                print(f"{i} {id}")
-                primary_df = polygeohasher.create_geohash_list(data_slice, 8, inner=False)
-                secondary_df = polygeohasher.geohash_optimizer(primary_df, 3, 8, 8)
-                secondary_df.to_csv(f"/home/guillermo/Descargas/shp/geohash_shp/{id}.csv", sep="#")
-            else:
-                print(f"EXISTE {i} -- {id}.csv")
-    except Exception as e:
-        print(e)
-
-# En otra terminal ejecutar esto [ira del municipio 4000 hasta el municipio 0]
-
-for i in range(4000, -1, -1):
-    archivos = listdir("/home/guillermo/Descargas/shp/geohash_shp")
-    data_slice = municipios[i-1:i]
-    try:
-        if data_slice.shape[0] >= 1:
-            id = data_slice["cod_ine"][i-1]
-            if f"{id}.csv" not in archivos:
-                print(f"{i} {id}")
-                primary_df = polygeohasher.create_geohash_list(data_slice, 8, inner=False)
-                secondary_df = polygeohasher.geohash_optimizer(primary_df, 3, 8, 8)
-                secondary_df.to_csv(f"/home/guillermo/Descargas/shp/geohash_shp/{id}.csv", sep="#", index=False)
-            else:
-                print(f"EXISTE {i} -- {id}.csv")
-    except Exception as e:
-        print(e)
-
-# ETC...
+shp2geohash_multiprocessing(**<instancias>**, municipios, 3, 8, "/home/guillermo/Descargas/shp/prueba/")
 ```
-
-Esto mismo se podria programar orientado a [hilos](https://realpython.com/intro-to-python-threading/) (yo he optado por esta opcion, pese a ser algo primitiva). 
-
+Esto hara uso de todos los recursos de tu ordenador, por lo que puede que el resto de tareas que estes ejecutando se realenticen.
+ 
 **Ejemplo de salida de un municipio a geohash**
 
 ```python
