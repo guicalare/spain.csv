@@ -70,6 +70,10 @@ Debido a la gran cantidad de datos, recomiendo bajarte los datos brutos finales 
 
 ## **Instrucciones**
 
+### Version 0
+
+https://centrodedescargas.cnig.es/CentroDescargas/catalogo.do?Serie=CAANE# -> red de transporte -> toda españa -> shp >:D
+
 ### Version 1
 
 ```
