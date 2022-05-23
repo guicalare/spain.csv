@@ -70,6 +70,23 @@ Debido a la gran cantidad de datos, recomiendo bajarte los datos brutos finales 
 
 ## **Instrucciones**
 
+### Version 1
+
+```
+
+wget -O - http://m.m.i24.cc/osmfilter.c |cc -x c - -O3 -o osmfilter
+wget -O - http://m.m.i24.cc/osmconvert.c | cc -x c - -lz -O3 -o osmconvert
+
+wget https://download.geofabrik.de/europe/spain-latest.osm.bz2
+bzip2 -d -f -k spain-latest.osm.bz2
+
+./osmfilter spain-latest.osm --keep="addr:*" --ignore-dependencies > calles.osm
+./osmconvert calles.osm --all-to-nodes --csv="@id @lon @lat addr:city addr:postcode addr:street addr:housenumber addr:housename addr:flats addr:door addr:hamlet addr:suburb addr:subdistrict addr:district " --csv-headline > calles.csv
+
+```
+
+### Version 2
+
 Open streat maps es un proyecto open source y alternativo a Google maps que sirve para obtener informacion geografica de cualquier zona (calles, shape files, rios, etc...).
 
 Antes de nada, tendremos que descargar todos los archivos necesarios para poder obtener un callejero de vias residenciales de España.
