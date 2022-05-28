@@ -1,0 +1,9 @@
+{
+	"input folder" : "/home/guillermo/Escritorio/ouraddress/input ddbb/",
+	"output folder" : "/home/guillermo/Escritorio/ouraddress/output ddbb/",
+	"search folder" : "/home/guillermo/Escritorio/ouraddress/search ddbb/",
+    "temp folder" : "/home/guillermo/Escritorio/ouraddress/temp/",
+    "early stop" : 95,
+    "min match valid" : 50,
+    "instances" : 12
+} 
